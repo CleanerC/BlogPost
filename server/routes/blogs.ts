@@ -53,7 +53,7 @@ blogsRoute.get("/:id{[0-9]+}", async (c) => {
 
 blogsRoute.post("/", zValidator("json", createBlogSchema), async (c) => {
     try {
-        const data = c.req.valid('json')
+        const data = await c.req.valid('json')
         const post = await prisma.post.create({
             data: {
                 title: data.title,
