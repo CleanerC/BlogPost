@@ -16,10 +16,9 @@ const blogSchema = z.object({
 });
 const createBlogSchema = blogSchema.omit({
   id: true,
-  author: true,
   date: true,
 });
-type Blog = z.infer<typeof blogSchema>;
+// type Blog = z.infer<typeof blogSchema>;
 
 blogsRoute.get("/", async (c) => {
   try {
