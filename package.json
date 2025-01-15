@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "start": "bun server/index.ts",
-    "dev": "bun --watch server/index.ts"
+    "dev": "bun --watch server/index.ts",
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.7.0",
