@@ -212,7 +212,7 @@ export function EditBlogForm({ post }: EditBlogFormProps) {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate({ to: '/' })}
+                    onClick={() => navigate({ to: '/blogs' })}
                   >
                     Cancel
                   </Button>
