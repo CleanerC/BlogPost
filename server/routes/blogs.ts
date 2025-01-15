@@ -8,17 +8,16 @@ const prisma = new PrismaClient();
 
 const blogSchema = z.object({
   id: z.number(),
-  author: z.string(),
   title: z.string().min(5).max(100),
   excerpt: z.string().min(20).max(200),
   content: z.string(),
   date: z.date(),
+  topic: z.string()
 });
 const createBlogSchema = blogSchema.omit({
   id: true,
   date: true,
 });
-// type Blog = z.infer<typeof blogSchema>;
 
 blogsRoute.get("/", async (c) => {
   try {
@@ -58,7 +57,7 @@ blogsRoute.post("/", zValidator("json", createBlogSchema), async (c) => {
                 title: data.title,
                 excerpt: data.excerpt,
                 content: data.content,
-                author: "testBackendTempUser"
+                topic: data.topic
             }
         })
         return c.json(post, 201)
@@ -68,6 +67,60 @@ blogsRoute.post("/", zValidator("json", createBlogSchema), async (c) => {
     }
 });
 
+blogsRoute.put("/:id{[0-9]+}", zValidator("json", createBlogSchema), async (c) => {
+  try {
+      const id = Number.parseInt(c.req.param("id"))
+      const data = await c.req.valid('json')
 
-//.put
-//.delete
+      // Check if post exists
+      const existingPost = await prisma.post.findUnique({
+          where: { id }
+      })
+
+      if (!existingPost) {
+          return c.json({ error: "Post not found" }, 404)
+      }
+
+      // Update the post
+      const updatedPost = await prisma.post.update({
+          where: { id },
+          data: {
+              title: data.title,
+              excerpt: data.excerpt,
+              content: data.content,
+              topic: data.topic
+          }
+      })
+
+      return c.json(updatedPost)
+  } catch (error) {
+      console.error("Failed to update post:", error)
+      return c.json({ error: "Failed to update post" }, 500)
+  }
+});
+
+
+blogsRoute.delete("/:id{[0-9]+}", async (c) => {
+  try {
+      const id = Number.parseInt(c.req.param("id"))
+
+      // Check if post exists
+      const existingPost = await prisma.post.findUnique({
+          where: { id }
+      })
+
+      if (!existingPost) {
+          return c.json({ error: "Post not found" }, 404)
+      }
+
+      // Delete the post
+      await prisma.post.delete({
+          where: { id }
+      })
+
+      return c.json({ message: "Post deleted successfully" }, 200)
+  } catch (error) {
+      console.error("Failed to delete post:", error)
+      return c.json({ error: "Failed to delete post" }, 500)
+  }
+});
