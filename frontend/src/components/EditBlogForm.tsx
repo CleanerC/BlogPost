@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -31,6 +32,7 @@ interface FormData {
   excerpt: string;
   content: string;
   topic: Topic;
+  pinned: boolean;
 }
 
 interface EditBlogFormProps {
@@ -46,7 +48,8 @@ export function EditBlogForm({ post }: EditBlogFormProps) {
       title: post.title,
       excerpt: post.excerpt,
       content: post.content,
-      topic: post.topic.toLowerCase() as Topic
+      topic: post.topic.toLowerCase() as Topic,
+      pinned: post.pinned || false
     }
   });
 
@@ -126,6 +129,24 @@ export function EditBlogForm({ post }: EditBlogFormProps) {
             )}
             
             <div className="space-y-6">
+              <FormField
+                control={form.control}
+                name="pinned"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Pin this post</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="title"

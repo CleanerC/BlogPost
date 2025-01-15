@@ -6,4 +6,5 @@ export interface BlogPost {
     content: string;
     date: string;
     topic: string;
+    pinned: boolean;
 }

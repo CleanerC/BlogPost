@@ -61,7 +61,7 @@ function RouteComponent() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold">Web Development Journey</h3>
+              <h3 className="text-lg font-semibold">Web Development</h3>
               <p className="text-muted-foreground">
                 I've been diving into web development for the past 3 months,
                 learning:

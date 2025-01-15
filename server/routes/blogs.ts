@@ -5,10 +5,8 @@ import { zValidator } from "@hono/zod-validator";
 
 export const blogsRoute = new Hono();
 
-// Create Prisma client with connection handling
 const prisma = new PrismaClient({
   datasourceUrl: process.env.DATABASE_URL,
-  // Add logging to debug connection issues
   log: ['query', 'error', 'warn']
 })
 
@@ -18,8 +16,10 @@ const blogSchema = z.object({
   excerpt: z.string().min(20).max(200),
   content: z.string(),
   date: z.date(),
-  topic: z.string()
+  topic: z.string(),
+  pinned: z.boolean().default(false) 
 });
+
 const createBlogSchema = blogSchema.omit({
   id: true,
   date: true,
@@ -29,15 +29,15 @@ blogsRoute.get("/", async (c) => {
   try {
     console.log('Starting database query...');
     const posts = await prisma.post.findMany({
-      orderBy: {
-        date: 'desc',
-      },
+      orderBy: [
+        { pinned: 'desc' }, 
+        { date: 'desc' }, 
+      ],
     });
     console.log('Query successful, posts:', posts.length);
     return c.json(posts);
   } catch (error) {
-    console.error('Detailed database error:', {
-    });
+    console.error('Detailed database error:', error);
     return c.json({ 
       error: "Failed to fetch posts", 
     }, 500);
@@ -69,13 +69,14 @@ blogsRoute.post("/", zValidator("json", createBlogSchema), async (c) => {
                 title: data.title,
                 excerpt: data.excerpt,
                 content: data.content,
-                topic: data.topic
+                topic: data.topic,
+                pinned: data.pinned ?? false
             }
         })
         return c.json(post, 201)
     } catch (error) {
         console.error("Failed to create post:", error)
-        return c.json({error: "failed to create psot"}, 500)
+        return c.json({error: "failed to create post"}, 500)
     }
 });
 
@@ -84,7 +85,7 @@ blogsRoute.put("/:id{[0-9]+}", zValidator("json", createBlogSchema), async (c) =
       const id = Number.parseInt(c.req.param("id"))
       const data = await c.req.valid('json')
 
-      // Check if post exists
+
       const existingPost = await prisma.post.findUnique({
           where: { id }
       })
@@ -93,14 +94,15 @@ blogsRoute.put("/:id{[0-9]+}", zValidator("json", createBlogSchema), async (c) =
           return c.json({ error: "Post not found" }, 404)
       }
 
-      // Update the post
+
       const updatedPost = await prisma.post.update({
           where: { id },
           data: {
               title: data.title,
               excerpt: data.excerpt,
               content: data.content,
-              topic: data.topic
+              topic: data.topic,
+              pinned: data.pinned ?? existingPost.pinned
           }
       })
 
@@ -111,12 +113,10 @@ blogsRoute.put("/:id{[0-9]+}", zValidator("json", createBlogSchema), async (c) =
   }
 });
 
-
 blogsRoute.delete("/:id{[0-9]+}", async (c) => {
   try {
       const id = Number.parseInt(c.req.param("id"))
 
-      // Check if post exists
       const existingPost = await prisma.post.findUnique({
           where: { id }
       })
@@ -125,7 +125,6 @@ blogsRoute.delete("/:id{[0-9]+}", async (c) => {
           return c.json({ error: "Post not found" }, 404)
       }
 
-      // Delete the post
       await prisma.post.delete({
           where: { id }
       })

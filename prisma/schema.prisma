@@ -21,4 +21,5 @@ model Post {
   excerpt String
   content String
   topic String
+  pinned Boolean @default(false)
 }
