@@ -27,14 +27,20 @@ const createBlogSchema = blogSchema.omit({
 
 blogsRoute.get("/", async (c) => {
   try {
+    console.log('Starting database query...');
     const posts = await prisma.post.findMany({
       orderBy: {
         date: 'desc',
       },
     });
+    console.log('Query successful, posts:', posts.length);
     return c.json(posts);
   } catch (error) {
-    return c.json({ error: "Failed to fetch posts" }, 500);
+    console.error('Detailed database error:', {
+    });
+    return c.json({ 
+      error: "Failed to fetch posts", 
+    }, 500);
   }
 });
 
