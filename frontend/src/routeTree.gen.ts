@@ -11,11 +11,21 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProjectsImport } from './routes/projects'
 import { Route as CreateblogImport } from './routes/createblog'
 import { Route as BlogsImport } from './routes/blogs'
+import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as ShowblogIdImport } from './routes/showblog.$id'
+import { Route as EditblogIdImport } from './routes/editblog.$id'
 
 // Create/Update Routes
+
+const ProjectsRoute = ProjectsImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const CreateblogRoute = CreateblogImport.update({
   id: '/createblog',
@@ -29,9 +39,27 @@ const BlogsRoute = BlogsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AboutRoute = AboutImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShowblogIdRoute = ShowblogIdImport.update({
+  id: '/showblog/$id',
+  path: '/showblog/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EditblogIdRoute = EditblogIdImport.update({
+  id: '/editblog/$id',
+  path: '/editblog/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
     '/blogs': {
@@ -60,6 +95,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateblogImport
       parentRoute: typeof rootRoute
     }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsImport
+      parentRoute: typeof rootRoute
+    }
+    '/editblog/$id': {
+      id: '/editblog/$id'
+      path: '/editblog/$id'
+      fullPath: '/editblog/$id'
+      preLoaderRoute: typeof EditblogIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/showblog/$id': {
+      id: '/showblog/$id'
+      path: '/showblog/$id'
+      fullPath: '/showblog/$id'
+      preLoaderRoute: typeof ShowblogIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -67,42 +123,84 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/blogs': typeof BlogsRoute
   '/createblog': typeof CreateblogRoute
+  '/projects': typeof ProjectsRoute
+  '/editblog/$id': typeof EditblogIdRoute
+  '/showblog/$id': typeof ShowblogIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/blogs': typeof BlogsRoute
   '/createblog': typeof CreateblogRoute
+  '/projects': typeof ProjectsRoute
+  '/editblog/$id': typeof EditblogIdRoute
+  '/showblog/$id': typeof ShowblogIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/blogs': typeof BlogsRoute
   '/createblog': typeof CreateblogRoute
+  '/projects': typeof ProjectsRoute
+  '/editblog/$id': typeof EditblogIdRoute
+  '/showblog/$id': typeof ShowblogIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/blogs' | '/createblog'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/createblog'
+    | '/projects'
+    | '/editblog/$id'
+    | '/showblog/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/blogs' | '/createblog'
-  id: '__root__' | '/' | '/blogs' | '/createblog'
+  to:
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/createblog'
+    | '/projects'
+    | '/editblog/$id'
+    | '/showblog/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/createblog'
+    | '/projects'
+    | '/editblog/$id'
+    | '/showblog/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   BlogsRoute: typeof BlogsRoute
   CreateblogRoute: typeof CreateblogRoute
+  ProjectsRoute: typeof ProjectsRoute
+  EditblogIdRoute: typeof EditblogIdRoute
+  ShowblogIdRoute: typeof ShowblogIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   BlogsRoute: BlogsRoute,
   CreateblogRoute: CreateblogRoute,
+  ProjectsRoute: ProjectsRoute,
+  EditblogIdRoute: EditblogIdRoute,
+  ShowblogIdRoute: ShowblogIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +214,34 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/about",
         "/blogs",
-        "/createblog"
+        "/createblog",
+        "/projects",
+        "/editblog/$id",
+        "/showblog/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/about": {
+      "filePath": "about.tsx"
     },
     "/blogs": {
       "filePath": "blogs.tsx"
     },
     "/createblog": {
       "filePath": "createblog.tsx"
+    },
+    "/projects": {
+      "filePath": "projects.tsx"
+    },
+    "/editblog/$id": {
+      "filePath": "editblog.$id.tsx"
+    },
+    "/showblog/$id": {
+      "filePath": "showblog.$id.tsx"
     }
   }
 }
