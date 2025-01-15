@@ -4,7 +4,13 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 
 export const blogsRoute = new Hono();
-const prisma = new PrismaClient();
+
+// Create Prisma client with connection handling
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+  // Add logging to debug connection issues
+  log: ['query', 'error', 'warn']
+})
 
 const blogSchema = z.object({
   id: z.number(),

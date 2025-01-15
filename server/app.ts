@@ -6,10 +6,10 @@ import { serveStatic } from 'hono/bun'
 const app = new Hono()
 app.use(logger())
 
-const apiroutes = app.basePath("/api").route("/blogs", blogsRoute)
+app.route("/api/blogs", blogsRoute)
 
-app.get('*', serveStatic({root: './frontend/dist'}))
+app.use('/*', serveStatic({ root: './frontend/dist' }))
 app.get('*', serveStatic({path: './frontend/dist/index.html'}))
  
 export default app
-export type ApiRoutes = typeof apiroutes
+export type ApiRoutes = typeof app
