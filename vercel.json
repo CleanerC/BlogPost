@@ -1,5 +1,5 @@
 {
-    "buildCommand": "cd frontend && npm install && npm run build && cd ../server && npm install && cd .. && npx prisma generate",
+    "buildCommand": " bun install && bunx prisma generate && bunx prisma migrate deploy && cd frontend && bun install && bun run build",
     "outputDirectory": "frontend/dist",
     "rewrites": [
       { "source": "/api/(.*)", "destination": "/api" },
